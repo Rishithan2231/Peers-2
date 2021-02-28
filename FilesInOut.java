@@ -6,32 +6,32 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class FilesInOut {
-	public static void main(String[] args)
-	{
+    public static void main(String[] args) {
+    	//declaring and initialising variables. 
+    	File input = null; //Gets the file path for the initial input of values. 
+    	File output = null;//Where the initial values are going to be processed and displayed.
+    	boolean upperCaseOrTitleCase = false; //All of the letters to be upper case or title case. 
+        String title = "";
+        
 
-		//declaring and initialising variables. 
-		File input = null; //Gets the file path for the initial input of values. 
-		File output = null;//Where the initial values are going to be processed and displayed.
-		boolean upperCaseOrTitleCase = false; //All of the letters to be upper case or title case. 
+        if (args.length == 0) 
+        {
 
-
-
-		//if statement for if length of the argument is non-existent. 
-		if (args.length == 0) {
-
-			//Scanning for the file path for input
+        	//Scanning for the file path for input
 			Scanner in = new Scanner(System.in);
-			System.out.println("Supply a file path for input of values. ");
+			System.out.println("Type in a file path for input of values. ");
 			input = new File(in.nextLine());
+            
 
 			//Scanning for file path of output
-			System.out.println("Supply a file path for output of values. ");
+			System.out.println("Type in a file path for output of values. ");
 			output = new File(in.nextLine());
 
 			//Asking for whether the user wants everything upper case or title case
 			upperCaseOrTitleCase = uOrT("For upper case press U. For title case press T. ", in); 
 			in.close();
-
+			
+		
 			//For loop for what happens to the file based on the conditions above. 
 			for (String arg : args) 
 			{
@@ -58,26 +58,30 @@ public class FilesInOut {
 
 		}
 
+        title = output.getName();
+    
 
+        try (Scanner in = new Scanner(input); PrintWriter out = new PrintWriter(output)) 
+        {
+          
 
-		try (Scanner in = new Scanner(input); PrintWriter out = new PrintWriter(output)) 
-		{
-
-			while (in.hasNextLine()) 
+        	while (in.hasNextLine()) 
 			{
 				// Separates the list of words into individual components.
 				String line = in.nextLine();
 				Scanner a = new Scanner(line);
 				ArrayList<String> list = new ArrayList<String>();     
+				StringBuilder name = new StringBuilder();              
+
 
 				while (a.hasNext()) 
 				{
 					list.add(a.next());
 				}
 				a.close();
-
+				
+				
 				//Generates a string builder based on the decision of Upper case or title case.
-				StringBuilder name = new StringBuilder();              
 
 				for (int i = 0; i < list.size() - 1; i++) 
 				{
@@ -96,56 +100,59 @@ public class FilesInOut {
 					}
 
 					name.append(" ");
-				}
 
-				//Date Conversion.
+                    // space between names
+                    name.append(" ");
+                }
+
+                // convert the final String to a date class
 				String conversion = list.get(list.size()-1);
 				LocalDate date = LocalDate.parse(conversion, DateTimeFormatter.ofPattern("ddMMuuuu"));
+				
+                // write formatted output to the file
+                if (upperCaseOrTitleCase)
+                    out.printf("\t\t");
 
-				//Output format
-				if (upperCaseOrTitleCase)
+                out.printf("%1$-20s\t%2$td/%2$tm/%2$tY", name, date);
 
-					out.printf("%1$-20s\t%2$td/%2$tm/%2$tY", name, date);
-
-				if (upperCaseOrTitleCase)
-					out.printf("\n");
-			}
-
-		} catch (Exception e) 
+                  out.printf("\n");
+            }
+           
+        } catch (Exception e) 
 		{
 			System.out.println("Something is wrong");
 		}
-	} 
+    } // main
 
-	//uOrT scanner
-	public static boolean uOrT(String prompt, Scanner in)
-	{
-		boolean uOrT = false;
-		boolean uOrT2 = false;
-		String checker;
+  //uOrT scanner
+  	public static boolean uOrT(String prompt, Scanner in)
+  	{
+  		boolean uOrT = false;
+  		boolean uOrT2 = false;
+  		String checker;
 
-		do {
+  		do {
 
-				System.out.println(prompt);
-				checker = in.nextLine();
-				if (checker.length() == 1) 
-				{
-					switch (checker.toUpperCase()) 
-					{
-					case "U":
-						uOrT2 = true;
-						uOrT = true;
-						break;
-					case "T":
-						uOrT = true;
-						break;
-					default:
-						break;
-					}
-				}
-			
-		} while(!uOrT);
+  				System.out.println(prompt);
+  				checker = in.nextLine();
+  				if (checker.length() == 1) 
+  				{
+  					switch (checker.toUpperCase()) 
+  					{
+  					case "U":
+  						uOrT2 = true;
+  						uOrT = true;
+  						break;
+  					case "T":
+  						uOrT = true;
+  						break;
+  					default:
+  						break;
+  					}
+  				}
+  			
+  		} while(!uOrT);
 
-		return uOrT2;
-	}
-} 
+  		return uOrT2;
+  	}
+} // FilesInOut
